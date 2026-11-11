@@ -9,4 +9,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Added offline-first operation queue (`createQueue`, `MemoryStorage`, `IndexedDbStorage`, `browserOnlineSource`, `registerSyncHandler`, `SyncError`) with idempotency keys, exponential backoff, conflict resolution, and dead-letter queue.
 - Initial project structure from the factory utility template.

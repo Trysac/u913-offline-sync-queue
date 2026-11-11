@@ -1,31 +1,13 @@
-# Security practices
+# Security & Threat Model
 
-How this repository keeps the package and its users safe. The disclosure policy is in
-[../SECURITY.md](../SECURITY.md).
+## Defended Threats
 
-## Secrets
+1. **Duplicate Mutation Application**: Every request includes an `Idempotency-Key` header (`<id>` or `<id>.r<n>`), allowing servers to deduplicate retried requests resulting from lost network responses.
+2. **Resource Exhaustion**: `enqueue()` enforces strict limits: `maxOps` (10,000), `maxBodyBytes` (1,048,576), `id` (128 chars), `url` (2,048 chars), and JSON nesting depth (64).
+3. **Sensitive Data Exposure**: `QueueEvent` objects emitted via `onEvent` never include request bodies, URLs, or headers. `SyncError` messages are truncated to 200 characters and exclude sensitive inputs.
 
-- No secrets, tokens or credentials in the repository, commit history, logs or prompts.
-- `gitleaks` runs as the last step of `npm run check` and as a dedicated CI job. Its configuration is
-  `.gitleaks.toml`.
-- Publishing credentials live only in the CI secret store or the maintainer's local npm configuration.
+## Not Defended
 
-## Dependencies
-
-- Runtime dependencies are avoided; development dependencies are limited to the toolchain listed in
-  [STACK.md](STACK.md).
-- Dependabot opens weekly updates for npm packages and GitHub Actions.
-- Commit the generated `package-lock.json` so installs are reproducible.
-
-## Code
-
-- No `eval`, dynamic `Function` construction or shelling out from library code.
-- Inputs from callers are validated and rejected with explicit errors.
-- The `security` step of `npm run check` runs ESLint with eslint-plugin-security only (Biome stays the
-  linter). Its configuration is `scripts/eslint-security.config.mjs`; inline `eslint-disable` comments are
-  ignored, so a finding is fixed in the code, never silenced.
-
-## Publishing
-
-- Packages are published from a clean checkout after `npm run check` passes.
-- Only `dist/` is included in the published tarball.
+1. **Server Incompatibility**: The queue relies on the backend to enforce deduplication via `Idempotency-Key`. If the server ignores this header, duplicate applications will occur.
+2. **Multi-Tab Concurrency**: Cross-tab coordination is not implemented. Multiple tabs sharing the same database rely solely on server-side deduplication.
+3. **Local Tampering**: IndexedDB is not encrypted. Any script with access to the origin (e.g., via XSS) can manipulate queued operations.

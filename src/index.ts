@@ -1,20 +1,37 @@
 /**
- * Public entry point of @trysac/offline-sync-queue.
+ * Public entry point of `@trysac/offline-sync-queue`.
  *
- * Replace this placeholder with the utility's real API. Keep every export documented and covered by tests.
+ * Offline-first operation queue with IndexedDB storage, idempotency keys,
+ * injectable backoff, conflict resolution, and a Service Worker Background Sync hook.
  */
 
-/**
- * Builds a greeting for `name`.
- *
- * @param name - Who to greet. Surrounding whitespace is ignored.
- * @returns The greeting, for example `"Hello, Ada!"`.
- * @throws {TypeError} When `name` is empty after trimming.
- */
-export function greet(name: string): string {
-  const trimmed = name.trim();
-  if (trimmed === "") {
-    throw new TypeError("name must not be empty");
-  }
-  return `Hello, ${trimmed}!`;
-}
+export { SyncError, type SyncErrorCode } from "./errors.js";
+export {
+  browserOnlineSource,
+  DEFAULT_SYNC_TAG,
+  type OnlineEventTarget,
+  registerSyncHandler,
+  type SyncEventLike,
+  type SyncServiceWorkerTarget,
+} from "./online.js";
+export { createQueue } from "./queue.js";
+export { IndexedDbStorage, MemoryStorage } from "./storage.js";
+export { createFetchTransport } from "./transport.js";
+export type {
+  Clock,
+  ConflictHandler,
+  ConflictResolution,
+  DeadLetter,
+  EnqueueOp,
+  HttpMethod,
+  OnlineSource,
+  Queue,
+  QueueEvent,
+  QueueOptions,
+  Storage,
+  StoredOp,
+  Timers,
+  Transport,
+  TransportRequest,
+  TransportResponse,
+} from "./types.js";

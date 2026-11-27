@@ -8,9 +8,15 @@ Web applications that must work offline often lose operations when a tab closes,
 
 ## Installation
 
-```bash
-npm install @trysac/offline-sync-queue
+Not published to npm yet. Build it from a clone, then install it from the local path:
+
+```sh
+git clone https://github.com/Trysac/u913-offline-sync-queue.git
+cd u913-offline-sync-queue && npm ci && npm run build
+cd ../your-project && npm install ../u913-offline-sync-queue
 ```
+
+Imports keep the package name: `import { ... } from "@trysac/offline-sync-queue"`.
 
 ## Usage
 
